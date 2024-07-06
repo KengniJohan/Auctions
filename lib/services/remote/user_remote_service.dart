@@ -3,7 +3,7 @@ import 'package:auctions/services/remote/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class UserService {
+class UserRemoteService {
   final _db = FirebaseFirestore.instance;
 
   Future<User?> insert(User user) async {
@@ -22,6 +22,25 @@ class UserService {
       debugPrint('Error occured while inserting user:\n$e');
 
       return null;
+    }
+  }
+
+  Future<List<User>> findByEmail(String email) async {
+    try {
+      final snapshot = await _db
+          .collection(Utils.users)
+          .where('email', isEqualTo: email)
+          .withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (User user, _) => user.toFirestore(),
+          )
+          .get();
+
+      return snapshot.docs.map((userData) => userData.data()).toList();
+    } catch (e) {
+      debugPrint('Error occured while getting user:\n$e');
+
+      return [];
     }
   }
 }

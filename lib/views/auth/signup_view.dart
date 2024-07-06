@@ -8,6 +8,7 @@ import 'package:auctions/views/widgets/auction_submit_btn.dart';
 import 'package:auctions/views/widgets/auction_textform_field.dart';
 import 'package:auctions/views/widgets/auction_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class SignupView extends StatefulWidget {
@@ -93,22 +94,38 @@ class _SignupViewState extends State<SignupView> {
               ),
               AuctionSubmitBtn(
                 onPressed: () async {
+                  EasyLoading.show(status: "Inscription...");
                   if (formKey.currentState!.validate()) {
-                    final user = await userController.insert(User(
-                      name: nameController.value.text,
-                      surname: surnameController.value.text,
-                      email: emailController.value.text,
-                      password: pwdController.value.text,
-                    ));
+                    final users = await userController
+                        .findByEmail(emailController.value.text);
+                    if (users.isEmpty) {
+                      final user = await userController.insert(User(
+                        name: nameController.value.text,
+                        surname: surnameController.value.text,
+                        email: emailController.value.text,
+                        password: pwdController.value.text,
+                      ));
 
-                    if (user != null) {
-                      final account = await accountController
-                          .insert(Account(ownerId: user.id));
-                      if (account != null) {
-                        _clearFields();
+                      if (user != null) {
+                        final account = await accountController
+                            .insert(Account(ownerId: user.id));
+                        if (account != null) {
+                          EasyLoading.dismiss();
+                          EasyLoading.showSuccess("Compte créé avec succès !");
+                          _clearFields();
+                          return;
+                        }
                       }
+                    } else {
+                      EasyLoading.dismiss();
+                      EasyLoading.showToast("Cette adresse existe déjà !");
+                      return;
                     }
+                    EasyLoading.dismiss();
+                    EasyLoading.showError("Une erreur s'est produite !");
+                    return;
                   }
+                  EasyLoading.dismiss();
                 },
                 text: "Inscription",
               ),

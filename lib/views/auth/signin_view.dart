@@ -1,10 +1,12 @@
 import 'package:auctions/configs/ressources/app_ressources.dart';
 import 'package:auctions/configs/routes/app_routes.dart';
+import 'package:auctions/controllers/controllers.dart';
 import 'package:auctions/views/widgets/auction_auth_squeleton.dart';
 import 'package:auctions/views/widgets/auction_submit_btn.dart';
 import 'package:auctions/views/widgets/auction_textform_field.dart';
 import 'package:auctions/views/widgets/auction_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class SigninView extends StatefulWidget {
@@ -18,6 +20,13 @@ class _SigninViewState extends State<SigninView> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
+
+  void _clearFields() {
+    setState(() {
+      emailController.text = "";
+      pwdController.text = "";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,26 @@ class _SigninViewState extends State<SigninView> {
               SizedBox(height: AppResources.sizes.size036),
               AuctionSubmitBtn(
                 text: "Connexion",
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {}
+                onPressed: () async {
+                  EasyLoading.show(status: "Connexion...");
+                  if (formKey.currentState!.validate()) {
+                    final user = await userController.signIn(
+                      emailController.value.text,
+                      pwdController.value.text,
+                    );
+
+                    if (user == null) {
+                      EasyLoading.dismiss();
+                      EasyLoading.showError("Echec de connexion !");
+                      return;
+                    }
+
+                    EasyLoading.dismiss();
+                    EasyLoading.showSuccess("Connexion réussie !");
+                    _clearFields();
+                    return;
+                  }
+                  EasyLoading.dismiss();
                 },
               ),
               SizedBox(

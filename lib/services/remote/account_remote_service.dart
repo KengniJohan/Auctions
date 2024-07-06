@@ -3,7 +3,7 @@ import 'package:auctions/services/remote/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AccountService {
+class AccountRemoveService {
   final _db = FirebaseFirestore.instance;
 
   Future<Account?> insert(Account account) async {
