@@ -9,18 +9,23 @@ class AppResources {
 
 class _Colors {
   final primary = const Color(0XFF24445C);
+  final selectedPrimary = const Color(0XFF1E394D);
   final secondary = const Color(0XFF56739A);
   final darkGrey = const Color(0XFF929292);
   final grey = const Color(0XFFD9D9D9);
 }
 
 class _Sizes {
+  final size000 = 0.0;
   final size002 = 2.0;
   final size008 = 8.0;
+  final size012 = 12.0;
   final size016 = 16.0;
   final size018 = 18.0;
   final size024 = 24.0;
+  final size028 = 28.0;
   final size032 = 32.0;
+  final size034 = 34.0;
   final size036 = 36.0;
   final size048 = 48.0;
   final size064 = 64.0;

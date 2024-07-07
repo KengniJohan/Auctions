@@ -1,4 +1,4 @@
-import 'package:auctions/configs/ressources/app_ressources.dart';
+import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:auctions/configs/routes/app_routes.dart';
 import 'package:auctions/controllers/controllers.dart';
 import 'package:auctions/models/account.dart';
@@ -45,7 +45,10 @@ class _SignupViewState extends State<SignupView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const AuctionTitle(title: "Inscrivez - vous !"),
+              AuctionTitle(
+                title: "Inscrivez - vous !",
+                color: AppResources.colors.secondary,
+              ),
               SizedBox(
                 height: AppResources.sizes.size032,
               ),

@@ -1,7 +1,7 @@
 import 'package:auctions/configs/routes/app_pages.dart';
 import 'package:auctions/configs/routes/app_routes.dart';
 import 'package:auctions/firebase_options.dart';
-import 'package:auctions/configs/ressources/app_ressources.dart';
+import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

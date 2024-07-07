@@ -1,4 +1,4 @@
-import 'package:auctions/configs/ressources/app_ressources.dart';
+import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:flutter/material.dart';
 
 class AuctionAuthSqueleton extends StatefulWidget {

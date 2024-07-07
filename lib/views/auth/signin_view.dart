@@ -1,4 +1,4 @@
-import 'package:auctions/configs/ressources/app_ressources.dart';
+import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:auctions/configs/routes/app_routes.dart';
 import 'package:auctions/controllers/controllers.dart';
 import 'package:auctions/views/widgets/auction_auth_squeleton.dart';
@@ -37,7 +37,10 @@ class _SigninViewState extends State<SigninView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const AuctionTitle(title: "Connectez - vous !"),
+              AuctionTitle(
+                title: "Connectez - vous !",
+                color: AppResources.colors.secondary,
+              ),
               SizedBox(height: AppResources.sizes.size032),
               AuctionTextformField(
                 hint: "Entrer votre Email",
@@ -71,6 +74,7 @@ class _SigninViewState extends State<SigninView> {
                     EasyLoading.dismiss();
                     EasyLoading.showSuccess("Connexion réussie !");
                     _clearFields();
+                    Get.offAllNamed(AppRoutes.home);
                     return;
                   }
                   EasyLoading.dismiss();
