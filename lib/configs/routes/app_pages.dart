@@ -1,5 +1,6 @@
 import 'package:auctions/configs/routes/app_routes.dart';
 import 'package:auctions/configs/routes/bindings/account_binding.dart';
+import 'package:auctions/configs/routes/bindings/auction_binding.dart';
 import 'package:auctions/configs/routes/bindings/user_binding.dart';
 import 'package:auctions/views/home_view.dart';
 import 'package:auctions/views/auth/signin_view.dart';
@@ -21,7 +22,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.home,
       page: () => const HomeView(),
-      bindings: [UserBinding()],
+      bindings: [UserBinding(), AuctionBinding()],
     ),
   ];
 }

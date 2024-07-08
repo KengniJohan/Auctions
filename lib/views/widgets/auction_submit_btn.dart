@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 class AuctionSubmitBtn extends StatefulWidget {
   final String text;
   final void Function() onPressed;
-  const AuctionSubmitBtn(
-      {super.key, required this.text, required this.onPressed});
+  final double? width;
+  const AuctionSubmitBtn({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.width,
+  });
 
   @override
   State<AuctionSubmitBtn> createState() => _AuctionSubmitBtnState();
@@ -35,8 +40,9 @@ class _AuctionSubmitBtnState extends State<AuctionSubmitBtn> {
         overlayColor: MaterialStatePropertyAll(
           AppResources.colors.primary.withOpacity(0.5),
         ),
-        fixedSize:
-            const MaterialStatePropertyAll(Size.fromWidth(double.maxFinite)),
+        fixedSize: MaterialStatePropertyAll(
+          Size.fromWidth(widget.width ?? double.maxFinite),
+        ),
       ),
       child: Text(widget.text),
     );
