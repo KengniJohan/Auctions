@@ -10,4 +10,6 @@ class AccountController extends GetxController {
     account.amount = 10000;
     return _service.insert(account);
   }
+
+  Future<Account?> getByOwner(String ownerId) => _service.getByOwner(ownerId);
 }

@@ -22,6 +22,20 @@ class AuctionRemoteService {
     }
   }
 
+  Future<void> update(String id, Auction auction) async {
+    try {
+      await _db
+          .collection(Utils.auctions)
+          .doc(id)
+          .withConverter(
+              fromFirestore: Auction.fromFirestore,
+              toFirestore: (Auction auction, _) => auction.toFirestore())
+          .set(auction);
+    } catch (e) {
+      debugPrint('Error occured while updating auction:\n$e');
+    }
+  }
+
   Stream<List<Auction>> getAllAsStream() => _db
       .collection(Utils.auctions)
       .withConverter(
@@ -30,4 +44,21 @@ class AuctionRemoteService {
       )
       .snapshots()
       .map((event) => event.docs.map((auctions) => auctions.data()).toList());
+
+  Future<List<Auction>> getAll() async {
+    try {
+      final snapshot = await _db
+          .collection(Utils.auctions)
+          .withConverter(
+            fromFirestore: Auction.fromFirestore,
+            toFirestore: (Auction auction, _) => auction.toFirestore(),
+          )
+          .get();
+
+      return snapshot.docs.map((phone) => phone.data()).toList();
+    } catch (e) {
+      debugPrint('Error occured while getting auctions:\n$e');
+      return [];
+    }
+  }
 }

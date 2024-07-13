@@ -36,6 +36,8 @@ class UserController extends GetxController {
   Future<List<User>> findByEmail(String email) =>
       _remoteService.findByEmail(email);
 
+  Future<User?> getById(String id) => _remoteService.getById(id);
+
   Future<bool> _login(User user) => _localService.login(user);
 
   Future<User?> getLoggedUser() => _localService.getLoggedUser();

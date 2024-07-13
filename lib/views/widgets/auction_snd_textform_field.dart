@@ -7,7 +7,9 @@ class AuctionSndTextformField extends StatefulWidget {
   final String title;
   final TextInputType? keyboardType;
   final void Function()? onTap;
+  final String? Function(String?)? validator;
   final bool readOnly;
+  final int maxLines;
 
   const AuctionSndTextformField({
     super.key,
@@ -15,7 +17,9 @@ class AuctionSndTextformField extends StatefulWidget {
     required this.title,
     this.keyboardType,
     this.onTap,
+    this.validator,
     this.readOnly = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -38,6 +42,7 @@ class _AuctionSndTextformFieldState extends State<AuctionSndTextformField> {
         ),
         SizedBox(height: AppResources.sizes.size008),
         TextFormField(
+          maxLines: widget.maxLines,
           cursorColor: AppResources.colors.primary,
           keyboardType: widget.keyboardType,
           readOnly: widget.readOnly,
@@ -59,24 +64,25 @@ class _AuctionSndTextformFieldState extends State<AuctionSndTextformField> {
             ),
           ),
           onTap: widget.onTap,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "Champs obligatoire !";
-            }
+          validator: widget.validator ??
+              (value) {
+                if (value == null || value.isEmpty) {
+                  return "Champs obligatoire !";
+                }
 
-            if (widget.keyboardType != null &&
-                widget.keyboardType == TextInputType.number &&
-                !value.isNumericOnly) {
-              final numVal = int.tryParse(value);
-              if (numVal == null) {
-                return "Valeur entière !";
-              }
+                if (widget.keyboardType != null &&
+                    widget.keyboardType == TextInputType.number &&
+                    !value.isNumericOnly) {
+                  final numVal = int.tryParse(value);
+                  if (numVal == null) {
+                    return "Valeur entière !";
+                  }
 
-              return "Champs numerique !";
-            }
+                  return "Champs numerique !";
+                }
 
-            return null;
-          },
+                return null;
+              },
         )
       ],
     );

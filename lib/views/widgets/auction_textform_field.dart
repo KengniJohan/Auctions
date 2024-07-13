@@ -71,6 +71,11 @@ class _AuctionTextformFieldState extends State<AuctionTextformField> {
           }
         }
 
+        if (widget.keyboardType == TextInputType.number &&
+            int.tryParse(value) == null) {
+          return "Champ numérique !";
+        }
+
         return null;
       },
     );

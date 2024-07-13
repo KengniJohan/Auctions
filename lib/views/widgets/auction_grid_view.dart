@@ -24,13 +24,12 @@ class _AuctionGridViewState extends State<AuctionGridView> {
               crossAxisCount: 4,
               crossAxisSpacing: AppResources.sizes.size024,
               mainAxisSpacing: AppResources.sizes.size012,
-              mainAxisExtent: AppResources.sizes.size128,
+              mainAxisExtent: AppResources.sizes.size160,
             ),
             itemBuilder: (context, index) {
               final auction = widget.auctions[index];
               return UserAuctionTile(
-                title: auction.title!,
-                dateTime: auction.startDate!,
+                auction: auction,
               );
             },
           );

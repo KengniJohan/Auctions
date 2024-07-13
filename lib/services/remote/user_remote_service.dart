@@ -38,9 +38,28 @@ class UserRemoteService {
 
       return snapshot.docs.map((userData) => userData.data()).toList();
     } catch (e) {
-      debugPrint('Error occured while getting user:\n$e');
+      debugPrint('Error occured while getting user by email:\n$e');
 
       return [];
+    }
+  }
+
+  Future<User?> getById(String id) async {
+    try {
+      final snapshot = await _db
+          .collection(Utils.users)
+          .doc(id)
+          .withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (User user, _) => user.toFirestore(),
+          )
+          .get();
+
+      return snapshot.data();
+    } catch (e) {
+      debugPrint('Error occured while getting user by id:\n$e');
+
+      return null;
     }
   }
 }

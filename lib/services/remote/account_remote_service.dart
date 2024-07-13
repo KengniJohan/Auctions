@@ -23,4 +23,22 @@ class AccountRemoveService {
       return null;
     }
   }
+
+  Future<Account?> getByOwner(String ownerId) async {
+    try {
+      final snapshot = await _db
+          .collection(Utils.accounts)
+          .where('ownerId', isEqualTo: ownerId)
+          .withConverter(
+            fromFirestore: Account.fromFirestore,
+            toFirestore: (Account account, _) => account.toFirestore(),
+          )
+          .get();
+
+      return snapshot.docs.map((account) => account.data()).firstOrNull;
+    } catch (e) {
+      debugPrint('Error occured while getting account:\n$e');
+      return null;
+    }
+  }
 }

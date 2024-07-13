@@ -1,15 +1,20 @@
 import 'package:auctions/configs/resources/app_ressources.dart';
+import 'package:auctions/views/widgets/search_activity_indicator.dart';
 import 'package:flutter/material.dart';
 
 class AuctionSubmitBtn extends StatefulWidget {
   final String text;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final double? width;
+  final bool forLoading;
+  final Widget? child;
   const AuctionSubmitBtn({
     super.key,
-    required this.text,
+    this.text = "",
     required this.onPressed,
     this.width,
+    this.forLoading = false,
+    this.child,
   });
 
   @override
@@ -22,8 +27,11 @@ class _AuctionSubmitBtnState extends State<AuctionSubmitBtn> {
     return TextButton(
       onPressed: widget.onPressed,
       style: ButtonStyle(
-        backgroundColor:
-            MaterialStatePropertyAll(AppResources.colors.secondary),
+        backgroundColor: MaterialStatePropertyAll(
+          widget.onPressed == null
+              ? AppResources.colors.darkGrey
+              : AppResources.colors.secondary,
+        ),
         foregroundColor: const MaterialStatePropertyAll(Colors.white),
         shape: MaterialStatePropertyAll(
           RoundedRectangleBorder(borderRadius: AppResources.radius.radius10),
@@ -44,7 +52,14 @@ class _AuctionSubmitBtnState extends State<AuctionSubmitBtn> {
           Size.fromWidth(widget.width ?? double.maxFinite),
         ),
       ),
-      child: Text(widget.text),
+      child: widget.child != null
+          ? widget.child!
+          : widget.forLoading
+              ? SearchActivityIndicator(
+                  radius: AppResources.sizes.size012,
+                  color: Colors.white,
+                )
+              : Text(widget.text),
     );
   }
 }

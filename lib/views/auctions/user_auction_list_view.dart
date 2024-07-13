@@ -2,12 +2,14 @@ import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:auctions/controllers/controllers.dart';
 import 'package:auctions/models/auction.dart';
 import 'package:auctions/models/enums/auction_status.dart';
+import 'package:auctions/models/user.dart';
 import 'package:auctions/views/widgets/auction_grid_view.dart';
 import 'package:auctions/views/widgets/auction_search_bar.dart';
 import 'package:auctions/views/widgets/auction_submit_btn.dart';
+import 'package:auctions/views/widgets/search_activity_indicator.dart';
 import 'package:auctions/views/widgets/warning_message.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class UserAuctionListView extends StatefulWidget {
   final void Function() onCreatingNewAuction;
@@ -21,15 +23,26 @@ class _UserAuctionListViewState extends State<UserAuctionListView>
     with TickerProviderStateMixin {
   late final TabController _tabController;
   String _searchKey = "";
+  User? _loggedUser;
 
   List<Auction> _filteredAuctions(List<Auction> auctions) => auctions
       .where((auction) =>
-          auction.title!.toLowerCase().contains(_searchKey.toLowerCase()))
+          auction.title!.toLowerCase().contains(_searchKey.toLowerCase()) &&
+          _loggedUser != null &&
+          _loggedUser!.id == auction.admin)
       .toList();
 
   @override
   void initState() {
     _tabController = TabController(length: 5, vsync: this);
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      final loggedUser = await userController.getLoggedUser();
+      if (loggedUser != null) {
+        setState(() {
+          _loggedUser = loggedUser;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -164,12 +177,7 @@ class _UserAuctionListViewState extends State<UserAuctionListView>
                 );
               }
 
-              return Center(
-                child: CupertinoActivityIndicator(
-                  color: AppResources.colors.primary,
-                  radius: AppResources.sizes.size018,
-                ),
-              );
+              return const SearchActivityIndicator();
             },
           ),
         ),

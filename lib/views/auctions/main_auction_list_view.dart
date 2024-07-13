@@ -1,17 +1,38 @@
 import 'package:auctions/configs/resources/app_ressources.dart';
 import 'package:auctions/controllers/controllers.dart';
+import 'package:auctions/models/auction.dart';
+import 'package:auctions/models/enums/auction_status.dart';
+import 'package:auctions/models/user.dart';
 import 'package:auctions/views/widgets/auction_search_bar.dart';
-import 'package:auctions/views/widgets/auction_submit_btn.dart';
+import 'package:auctions/views/widgets/main_auction_tile.dart';
+import 'package:auctions/views/widgets/search_activity_indicator.dart';
+import 'package:auctions/views/widgets/warning_message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class MainAuctionListView extends StatefulWidget {
-  const MainAuctionListView({super.key});
+  final void Function(Auction) onParticipating;
+  const MainAuctionListView({super.key, required this.onParticipating});
 
   @override
   State<MainAuctionListView> createState() => _MainAuctionListViewState();
 }
 
 class _MainAuctionListViewState extends State<MainAuctionListView> {
+  User? _loggedUser;
+  // String _searchKey = "";
+
+  @override
+  void setState(VoidCallback fn) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      final user = await userController.getLoggedUser();
+      setState(() {
+        _loggedUser = user;
+      });
+    });
+    super.setState(fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,7 +44,11 @@ class _MainAuctionListViewState extends State<MainAuctionListView> {
               Flexible(
                 flex: 40,
                 child: AuctionSearchBar(
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      // _searchKey = value;
+                    });
+                  },
                 ),
               ),
               const Spacer(),
@@ -64,7 +89,51 @@ class _MainAuctionListViewState extends State<MainAuctionListView> {
           ),
         ),
         Expanded(
-          child: SingleChildScrollView(
+          child: StreamBuilder(
+            stream: auctionController.getAllAsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const WarningMessage(
+                    message: "Une erreur s'est produite !");
+              }
+
+              if (snapshot.hasData) {
+                final auctions = snapshot.data!
+                    .where((auction) =>
+                        auction.admin != _loggedUser?.id &&
+                        (auction.status == AuctionStatus.newed ||
+                            auction.status == AuctionStatus.inProcess))
+                    .toList();
+
+                auctions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+                return auctions.isEmpty
+                    ? const WarningMessage(message: "Aucune enchère trouvée !")
+                    : ListView.builder(
+                        itemCount: auctions.length,
+                        itemBuilder: (context, index) {
+                          final auction = auctions[index];
+                          return Column(
+                            children: [
+                              SizedBox(height: AppResources.sizes.size024),
+                              MainAuctionTile(
+                                auction: auction,
+                                onParticipating: widget.onParticipating,
+                              ),
+                              SizedBox(height: AppResources.sizes.size024),
+                              Divider(height: AppResources.sizes.size002),
+                            ],
+                          );
+                        },
+                      );
+              }
+
+              return SearchActivityIndicator(
+                radius: AppResources.sizes.size024,
+              );
+            },
+          )
+          /*SingleChildScrollView(
             child: Column(
               children: [
                 Column(
@@ -925,7 +994,8 @@ class _MainAuctionListViewState extends State<MainAuctionListView> {
                 SizedBox(height: AppResources.sizes.size024),
               ],
             ),
-          ),
+          )*/
+          ,
         ),
       ],
     );
